@@ -365,7 +365,7 @@ def main():
         run = True
         while run:
 
-            #check if game is paused g
+            #check if game is paused 
             if game_paused  == True:
                 if resume_button.draw(screen):
                     pygame.draw.rect(screen,color,pygame.Rect(300,710,200,100))
