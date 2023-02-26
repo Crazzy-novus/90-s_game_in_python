@@ -60,6 +60,62 @@ def main():
         pygame.display.update()
 
 
+    # ********* pause function *********** #
+    def pause(game_paused):
+        
+        resume_img = _resource_Path("button_resume.png")
+        resume = pygame.image.load(resume_img)
+        clock=pygame.time.Clock()
+
+        options_img = _resource_Path("button_options.png")
+        option = pygame.image.load(options_img)
+        clock=pygame.time.Clock()
+
+        quit_img = _resource_Path("button_quit.png")
+        quit1 = pygame.image.load(quit_img)
+        clock=pygame.time.Clock()
+
+        #create button instances
+        resume_button = button.Button(300, 710, resume, .8)
+        options_button = button.Button(600, 710, option, .8)
+        quit_button = button.Button(900, 710, quit1, .8)
+    
+
+        #game loop
+        run = True
+        while run:
+
+            #check if game is paused 
+            if game_paused  == True:
+                if resume_button.draw(screen):
+                    pygame.draw.rect(screen,color,pygame.Rect(300,710,200,100))
+                    pygame.draw.rect(screen,color,pygame.Rect(600,710,200,100))
+                    pygame.draw.rect(screen,color,pygame.Rect(900,710,200,100))
+                    pygame.display.update()
+                    game_paused = False
+                    return
+                if options_button.draw(screen):
+                    game_paused = False
+                    pygame.draw.rect(screen,color,pygame.Rect(300,710,200,100))
+                    pygame.draw.rect(screen,color,pygame.Rect(600,710,200,100))
+                    pygame.draw.rect(screen,color,pygame.Rect(900,710,200,100))
+                    pygame.display.update()
+                    return
+                if quit_button.draw(screen):
+                    run = False
+                    game_paused = False
+                    return -1
+                
+            #event handler
+            for event in pygame.event.get():
+                    pass
+                    
+                        
+                        
+
+            pygame.display.update()
+
+
     # ********** function to get total number of player ********** #
 
     def _get_Total_Player(x,y):
@@ -69,6 +125,12 @@ def main():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_END:
                         summa = False
+                    elif event.key == pygame.K_SPACE:
+                        returned_value = pause(True)
+                        if returned_value == -1:
+                            summa = False
+                            pygame.quit()
+                            exit()
                     else:
                         column = event.unicode
                         text_surface = base_font.render(column,True,(255,255,255))
@@ -85,7 +147,14 @@ def main():
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_END:
-                        summa = False                    
+                        summa = False  
+                    elif event.key == pygame.K_SPACE:
+                        returned_value = pause(True)
+                        if returned_value == -1:
+                            summa = False
+                            pygame.quit()
+                            exit()
+                    
                     else:
                         user_name += event.unicode
                         text_surface = base_font.render(user_name,True,(255,255,255))
@@ -340,64 +409,6 @@ def main():
         _show_Text(50,(i*box_drawn.height)+75+int(box_drawn.height/2),'',j)
         j+=2
 
-    # ********* pause function *********** #
-    def pause(game_paused):
-        
-        resume_img = _resource_Path("button_resume.png")
-        resume = pygame.image.load(resume_img)
-        clock=pygame.time.Clock()
-
-        options_img = _resource_Path("button_options.png")
-        option = pygame.image.load(options_img)
-        clock=pygame.time.Clock()
-
-        quit_img = _resource_Path("button_quit.png")
-        quit1 = pygame.image.load(quit_img)
-        clock=pygame.time.Clock()
-
-        #create button instances
-        resume_button = button.Button(300, 710, resume, .8)
-        options_button = button.Button(600, 710, option, .8)
-        quit_button = button.Button(900, 710, quit1, .8)
-    
-
-        #game loop
-        run = True
-        while run:
-
-            #check if game is paused 
-            if game_paused  == True:
-                if resume_button.draw(screen):
-                    pygame.draw.rect(screen,color,pygame.Rect(300,710,200,100))
-                    pygame.draw.rect(screen,color,pygame.Rect(600,710,200,100))
-                    pygame.draw.rect(screen,color,pygame.Rect(900,710,200,100))
-                    pygame.display.update()
-                    game_paused = False
-                    return
-                if options_button.draw(screen):
-                    game_paused = False
-                    pygame.draw.rect(screen,color,pygame.Rect(300,710,200,100))
-                    pygame.draw.rect(screen,color,pygame.Rect(600,710,200,100))
-                    pygame.draw.rect(screen,color,pygame.Rect(900,710,200,100))
-                    pygame.display.update()
-                    return
-                if quit_button.draw(screen):
-                    run = False
-                    pygame.quit()
-                #display menu
-            #event handler
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.type == pygame.QUIT:
-                        run = False
-
-            pygame.display.update()
-
-
-
-
-
-
     # ********** main function ********** #
 
     def main_function():
@@ -434,8 +445,13 @@ def main():
                                 restart = 1
                             elif key[pygame.K_SPACE]:
                                 game_paused = True
-                                pause(True)
-                           
+                                returned_value = pause(True)
+                                if returned_value == -1:
+                                    summa = False
+                                    restart = 1
+                                
+                                
+
                 
                 if restart == 1:
                     main()         
@@ -452,7 +468,14 @@ def main():
                             summa=False
                         elif key[pygame.K_SPACE]:
                                 game_paused = True
-                                pause(True)
+                                returned_value = pause(True)
+                                if returned_value == -1:
+                                    summa = False
+                                    restart = 1
+                                
+                                
+                if restart == 1:
+                    main()                 
                         
                         
                 if(num % 10 ==0):

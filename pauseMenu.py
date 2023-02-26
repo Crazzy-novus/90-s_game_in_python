@@ -67,12 +67,14 @@ while run:
     else:
         draw_text("press SPACE to pause", font, TEXT_COL,160,250)
     #event handler
+    
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 game_paused = True
         if event.type == pygame.QUIT:
             run = False
+            exit()
 
     pygame.display.update()
 
