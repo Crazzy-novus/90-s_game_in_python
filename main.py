@@ -16,6 +16,7 @@ import pygame
 import random
 import os
 import sys
+from network import Network
 pygame.init()
 WIDTH =1300
 HEIGHT=700
@@ -166,16 +167,8 @@ def main():
     # *************** creating user class ***************#
     class User():
         def __init__(self):
-            self.occurrence_0 =0
-            self.occurrence_2 =0
-            self.occurrence_4 =0
-            self.occurrence_6 =0
-            self.occurrence_8 =0
-            self.death_0     =0               
-            self.death_2     =0
-            self.death_4     =0
-            self.death_6     =0
-            self.death_8     =0
+            self.occurrence = [[0],[0],[0],[0],[0]]
+            self.death     = [[0],[0],[0],[0],[0]]
             self.win =1
     # *************** table object class initialization ********* # 
     class Tables:
@@ -298,17 +291,7 @@ def main():
                     pygame.draw.line(screen,cross_line_colour,(box_x,box_y),(box_x+box_drawn.width,box_y+box_drawn.height),5)
                     pygame.draw.line(screen,cross_line_colour,(box_x+box_drawn.width,box_y),(box_x,box_y+box_drawn.height),5)
                     pygame.display.update()
-                    if r_ow==0:
-                        user_list[col_um].death_0 =1
-                    elif r_ow==1:
-                        user_list[col_um].death_2 =1
-                    elif r_ow==2:
-                        user_list[col_um].death_4 =1
-                    elif r_ow==3:
-                        user_list[col_um].death_6 =1
-                    elif r_ow==4:
-                        user_list[col_um].death_8 =1
-                    return False
+                    user_list[col_um].death[r_ow][0] =1
                     break
 
     # ********** function to generate random numbers ********** #
@@ -409,7 +392,39 @@ def main():
         _show_Text(50,(i*box_drawn.height)+75+int(box_drawn.height/2),'',j)
         j+=2
 
+    # ********** Function to draw character according to the random number generated ********** #
+
+    def DrawFunction(i,row):
+        _highlight_Box(i,row)
+        pygame.display.update()
+        user_list[i].occurrence[row][0] = user_list[i].occurrence[row][0] + 1
+        if user_list[i].death[row][0] != 0:
+            pygame.draw.rect(screen,color,pygame.Rect(random_text_x,random_text_y,250,20))
+            _show_Text(random_text_x,random_text_y,"sorry already lost:")
+        
+        elif(user_list[i].occurrence[row][0]==1):
+            head_drawn._create_Head(i,row)
+        elif(user_list[i].occurrence[row][0]==2):
+            line_drawn._create_Toy(i,row)
+            hand_R_drawn._create_Toy_Hand_R(i,row)
+        elif(user_list[i].occurrence[row][0]==3):
+            gun_drawn._create_Coordinates(i,row)
+
+        elif(user_list[i].occurrence[row][0]>3):
+            click = True
+            while click:
+                pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
+                _show_Text(random_text_x+500,random_text_y,"please select any box to eliminate the player:")
+                for event in pygame.event.get():
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if pygame.mouse.get_pressed():
+                            position =pygame.mouse.get_pos()
+                            click =_cross_Line(position[0],position[1])
+            pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
+            pygame.display.update()
+
     # ********** main function ********** #
+
 
     def main_function():
         run = True
@@ -418,10 +433,10 @@ def main():
             
             for i in range(0,column):
                 
-                if user_list[i].death_0 != 0 and user_list[i].death_2 != 0 and user_list[i].death_4 != 0 and user_list[i].death_6 != 0 and user_list[i].death_8 != 0:
+                if user_list[i].death[0][0] != 0 and user_list[i].death[1][0] != 0 and user_list[i].death[2][0] != 0 and user_list[i].death[3][0] != 0 and user_list[i].death[4][0] != 0:
                     pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
                     _show_Text(random_text_x+500,random_text_y,"player already loose the game:")                    
-                    user_list[i].win=0
+                    user_list[i].win = 0
                     continue
                 pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
                 total_win = column
@@ -480,153 +495,24 @@ def main():
                         
                 if(num % 10 ==0):
                     row =0
-                    # ***** FUNCTION CALL TO HIGHLIGHT THE BOX ***** #
-                    _highlight_Box(i,row)
-                    pygame.display.update()
-
-                    user_list[i].occurrence_0 = user_list[i].occurrence_0 + 1
-
-                    if user_list[i].death_0 !=0:
-                        pygame.draw.rect(screen,color,pygame.Rect(random_text_x,random_text_y,250,20))
-                        _show_Text(random_text_x,random_text_y,"sorry already lost:")
-                    elif(user_list[i].occurrence_0==1):
-                        head_drawn._create_Head(i,row)
-                    elif(user_list[i].occurrence_0==2):
-                        line_drawn._create_Toy(i,row)
-                        hand_R_drawn._create_Toy_Hand_R(i,row)
-                    elif(user_list[i].occurrence_0==3):
-                        gun_drawn._create_Coordinates(i,row)
-                    elif(user_list[i].occurrence_0>3):
-                        click = True
-                        while click:
-                            
-                            pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
-                            _show_Text(random_text_x+500,random_text_y,"please select any box to eliminate the player:")
-                            for event in pygame.event.get():
-                                if event.type == pygame.MOUSEBUTTONDOWN:
-                                    if pygame.mouse.get_pressed():
-                                        position =pygame.mouse.get_pos()
-                                        click =_cross_Line(position[0],position[1])
-                        pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))                   
-                        pygame.display.update()                
-                    
+                    DrawFunction(i,row)
 
                 elif(num % 10 ==2):
                     row =1
-                    _highlight_Box(i,row)
-                    pygame.display.update()
-                    user_list[i].occurrence_2 = user_list[i].occurrence_2 + 1
-                    if user_list[i].death_2 !=0:
-                        pygame.draw.rect(screen,color,pygame.Rect(random_text_x,random_text_y,250,20))
-                        _show_Text(random_text_x,random_text_y,"sorry already lost:")
-                    
-                    elif(user_list[i].occurrence_2==1):
-                        head_drawn._create_Head(i,row)
-                    elif(user_list[i].occurrence_2==2):
-                        line_drawn._create_Toy(i,row)
-                        hand_R_drawn._create_Toy_Hand_R(i,row)
-                    elif(user_list[i].occurrence_2==3):
-                        gun_drawn._create_Coordinates(i,row)
+                    DrawFunction(i,row)
 
-                    elif(user_list[i].occurrence_2>3):
-                        click = True
-                        while click:
-                            pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
-                            _show_Text(random_text_x+500,random_text_y,"please select any box to eliminate the player:")
-                            for event in pygame.event.get():
-                                if event.type == pygame.MOUSEBUTTONDOWN:
-                                    if pygame.mouse.get_pressed():
-                                        position =pygame.mouse.get_pos()
-                                        click =_cross_Line(position[0],position[1])
-                        pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
-                        pygame.display.update()                
-            
                 elif(num % 10 ==4):
                     row =2
-                    _highlight_Box(i,row)
-                    pygame.display.update()
-                    user_list[i].occurrence_4 = user_list[i].occurrence_4 + 1
-                    if user_list[i].death_4 !=0:
-                        pygame.draw.rect(screen,color,pygame.Rect(random_text_x,random_text_y,250,20))
-                        _show_Text(random_text_x,random_text_y,"sorry already lost:")
-                    
-                    elif(user_list[i].occurrence_4==1):
-                        head_drawn._create_Head(i,row)
-                    elif(user_list[i].occurrence_4==2):
-                        line_drawn._create_Toy(i,row)
-                        hand_R_drawn._create_Toy_Hand_R(i,row)
-                    elif(user_list[i].occurrence_4==3):
-                        gun_drawn._create_Coordinates(i,row)
+                    DrawFunction(i,row)
 
-                    elif(user_list[i].occurrence_4>3):
-                        click = True
-                        while click:
-                            pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
-                            _show_Text(random_text_x+500,random_text_y,"please select any box to eliminate the player:")
-                            for event in pygame.event.get():
-                                if event.type == pygame.MOUSEBUTTONDOWN:
-                                    if pygame.mouse.get_pressed():
-                                        position =pygame.mouse.get_pos()
-                                        click =_cross_Line(position[0],position[1])
-                        pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
-                        pygame.display.update()
-            
                 elif(num % 10 ==6):
                     row =3
-                    _highlight_Box(i,row)
-                    pygame.display.update()
-                    user_list[i].occurrence_6 = user_list[i].occurrence_6 + 1
-                    if user_list[i].death_6 !=0:
-                        pygame.draw.rect(screen,color,pygame.Rect(random_text_x,random_text_y,250,20))
-                        _show_Text(random_text_x,random_text_y,"sorry already lost:")
-                    
-                    elif(user_list[i].occurrence_6==1):
-                        head_drawn._create_Head(i,row)
-                    elif(user_list[i].occurrence_6==2):
-                        line_drawn._create_Toy(i,row)
-                        hand_R_drawn._create_Toy_Hand_R(i,row)
-                    elif(user_list[i].occurrence_6==3):
-                        gun_drawn._create_Coordinates(i,row)
-                    elif(user_list[i].occurrence_6>3):
-                        click = True
-                        while click:
-                            pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
-                            _show_Text(random_text_x+500,random_text_y,"please select any box to eliminate the player:")
-                            for event in pygame.event.get():
-                                if event.type == pygame.MOUSEBUTTONDOWN:
-                                    if pygame.mouse.get_pressed():
-                                        position =pygame.mouse.get_pos()
-                                        click =_cross_Line(position[0],position[1])
-                        pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
-                        pygame.display.update()             
+                    DrawFunction(i,row)
+
                 elif(num % 10 ==8):
                     row =4
-                    _highlight_Box(i,row)
-                    pygame.display.update()
-                    user_list[i].occurrence_8 = user_list[i].occurrence_8 + 1
-                    if user_list[i].death_8 !=0:
-                        pygame.draw.rect(screen,color,pygame.Rect(random_text_x,random_text_y,250,20))
-                        _show_Text(random_text_x,random_text_y,"sorry already lost:")
-                    
-                    elif(user_list[i].occurrence_8==1):
-                        head_drawn._create_Head(i,row)
-                    elif(user_list[i].occurrence_8==2):
-                        line_drawn._create_Toy(i,row)
-                        hand_R_drawn._create_Toy_Hand_R(i,row)
-                    elif(user_list[i].occurrence_8==3):
-                        gun_drawn._create_Coordinates(i,row)
-                    elif(user_list[i].occurrence_8>3):
-                        click = True
-                        while click:
-                            pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
-                            _show_Text(random_text_x+500,random_text_y,"please select any box to eliminate the player:")
-                            for event in pygame.event.get():
-                                if event.type == pygame.MOUSEBUTTONDOWN:
-                                    if pygame.mouse.get_pressed():
-                                        position =pygame.mouse.get_pos()
-                                        click =_cross_Line(position[0],position[1])
-                        pygame.draw.rect(screen,color,pygame.Rect(random_text_x+500,random_text_y,500,30))
-                        pygame.display.update()                
+                    DrawFunction(i,row)
+
                 pygame.display.update()
 
 
