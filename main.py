@@ -124,7 +124,7 @@ def main():
         while summa:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_END:
+                    if event.key == pygame.K_INSERT:
                         summa = False
                     elif event.key == pygame.K_SPACE:
                         returned_value = pause(True)
@@ -147,7 +147,7 @@ def main():
         while summa:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_END:
+                    if event.key == pygame.K_INSERT:
                         summa = False  
                     elif event.key == pygame.K_SPACE:
                         returned_value = pause(True)
@@ -373,7 +373,7 @@ def main():
         while summa:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_END:
+                    if event.key == pygame.K_INSERT:
                         summa = False
         
 
@@ -455,7 +455,7 @@ def main():
 
                         for event in pygame.event.get():
                             key = pygame.key.get_pressed()
-                            if key[pygame.K_END]:                
+                            if key[pygame.K_INSERT]:                
                                 summa=False
                                 restart = 1
                             elif key[pygame.K_SPACE]:
@@ -521,4 +521,4 @@ def main():
         pygame.quit()
 
     main_function()
-main()
+main() 
